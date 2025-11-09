@@ -34,12 +34,12 @@ export default function UserManagementPage() {
         const data = await res.json();
         setUserRole(data.role);
         if (data.role !== 'ADMIN') {
-          router.push('/'); // Redirect if not admin
+          router.push('/'); 
         } else {
-          fetchUsers(); // Fetch users only if admin
+          fetchUsers(); 
         }
       } else {
-        router.push('/login'); // Redirect to login if not authenticated
+        router.push('/login'); 
       }
     };
     fetchCurrentUserRole();
@@ -102,13 +102,13 @@ export default function UserManagementPage() {
   }
 
   if (userRole !== 'ADMIN') {
-    return null; // Should be redirected by useEffect
+    return null; 
   }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <main>
-        <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 px-2">
           <h1 className="mb-6 text-3xl font-bold text-gray-900">Manajemen Pengguna</h1>
 
           <button
@@ -136,7 +136,7 @@ export default function UserManagementPage() {
             />
           )}
 
-          <div className="overflow-hidden bg-white shadow sm:rounded-lg">
+          <div className="overflow-x-auto bg-white shadow sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -179,7 +179,7 @@ export default function UserManagementPage() {
                       >
                         Edit
                       </button>
-                      {user.role !== 'ADMIN' && ( // Prevent admin from deleting other admins directly from here
+                      {user.role !== 'ADMIN' && ( 
                         <button
                           onClick={() => handleDeleteUser(user.id)}
                           className="text-red-600 hover:text-red-900"

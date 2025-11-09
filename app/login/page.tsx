@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +20,7 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push('/');
+      window.location.href = '/';
     } else {
       const data = await res.json();
       setError(data.message);

@@ -1,14 +1,14 @@
 {
-  "name": "hms-mabithotel",
+  "name": "hms-hotel",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "dotenv -e .env -- npx prisma generate && next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "prisma:migrate": "dotenv -e .env -- npx prisma migrate reset",
+    "prisma:migrate": "dotenv -e .env -- npx prisma migrate dev",
     "prisma:seed": "dotenv -e .env -- node --loader ts-node/esm prisma/seed.ts"
   },
   "dependencies": {

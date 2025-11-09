@@ -65,7 +65,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <main>
-        <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 px-2">
           {userRole === 'ADMIN' && <AddRoomForm onAddRoom={handleAddRoom} />}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {rooms.map((room) => (

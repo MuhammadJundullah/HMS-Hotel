@@ -62,35 +62,35 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
   };
 
   return (
-    <div className={`p-4 text-gray-800 rounded-lg shadow-md ${getStatusColor(room.status)}`}>
+    <div className={`p-2 sm:p-4 text-gray-800 rounded-lg shadow-md ${getStatusColor(room.status)}`}>
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">{room.roomNumber}</h2>
+        <h2 className="text-md sm:text-lg font-bold">{room.roomNumber}</h2>
         {/* Removed cleanliness icon */}
       </div>
-      <p className="text-sm">{room.status}</p> {/* Display translated status */}
+      <p className="text-xs sm:text-sm">{room.status}</p> {/* Display translated status */}
       {/* Removed cleanliness display */}
 
       {(userRole === 'ADMIN' || userRole === 'ROOM_PREPARER') && (
-        <div className="mt-4">
-          <label htmlFor="status" className="block mb-2 text-sm font-medium text-black">
+        <div className="mt-2 sm:mt-4">
+          <label htmlFor="status" className="block mb-1 text-xs sm:text-sm font-medium text-black">
             Ubah Status
           </label>
           <select
             id="status"
             value={room.status}
             onChange={(e) => handleUpdateStatus(e.target.value as Room['status'])}
-            className="w-full p-2 text-black rounded-md"
+            className="w-full p-1 sm:p-2 text-black rounded-md text-xs sm:text-sm"
           >
             <option value="TERSEDIA">Tersedia</option>
             <option value="DIPESAN">Dipesan</option>
-            <option value="DIBERSIHKAN">Dibesihkan</option>
+            <option value="DIBERSIHKAN">Dibersihkan</option>
           </select>
         </div>
       )}
       {userRole === 'ADMIN' && (
         <button
           onClick={handleDelete}
-          className="w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-red-800 border border-transparent rounded-md shadow-sm hover:bg-red-600 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          className="w-full px-2 py-1 mt-2 text-xs sm:text-sm font-medium text-white bg-red-800 border border-transparent rounded-md shadow-sm sm:px-4 sm:py-2 hover:bg-red-600 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
         >
           Hapus Kamar
         </button>
