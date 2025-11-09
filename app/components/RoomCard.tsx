@@ -1,16 +1,7 @@
 "use client";
 
 import React from 'react';
-// Assuming Room type is available from prisma client or a shared types file
-// import { Room, UserRole } from '@prisma/client'; // Adjust import as necessary
-
-// Define Room type locally if not imported, based on schema
-interface Room {
-  id: number;
-  roomNumber: string;
-  status: 'TERSEDIA' | 'DIBERSIHKAN' | 'DIPESAN'; 
-  
-}
+import { Room } from '@/types/room';
 
 // Define UserRole type if not imported
 type UserRole = 'ADMIN' | 'ROOM_PREPARER' | 'USER'; 

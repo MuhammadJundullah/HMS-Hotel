@@ -1,14 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PATCH(req: any, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
   const userRole = req.headers.get('x-user-role');
   const adminId = req.headers.get('x-user-id');
 
@@ -40,7 +38,8 @@ export async function PATCH(
 
     const updatedUser = await prisma.user.update({
       where: { id: parseInt(id, 10) },
-      data: dataToUpdate,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: dataToUpdate as any,
     });
 
     try {
@@ -62,11 +61,9 @@ export async function PATCH(
   }
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(req: any, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
   const userRole = req.headers.get('x-user-role');
   const adminId = req.headers.get('x-user-id');
 
@@ -95,11 +92,9 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(req: any, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
   const userRole = req.headers.get('x-user-role');
   const adminId = req.headers.get('x-user-id');
 

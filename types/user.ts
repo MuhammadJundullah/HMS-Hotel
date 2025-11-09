@@ -1,0 +1,1 @@
+export type UserRole = 'ADMIN' | 'ROOM_PREPARER' | 'USER';

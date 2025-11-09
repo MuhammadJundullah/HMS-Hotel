@@ -1,13 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PATCH(req: any, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
   const userId = req.headers.get('x-user-id');
   const userRole = req.headers.get('x-user-role');
   const { status } = await req.json(); 
@@ -19,7 +17,9 @@ export async function PATCH(
     return NextResponse.json({ message: 'Terlarang' }, { status: 403 });
   }
 
-  const dataToUpdate: { status?: string } = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dataToUpdate: { status?: any } = {};
+
   if (status) {
     dataToUpdate.status = status;
   }
@@ -72,11 +72,9 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(req: any, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
   const userRole = req.headers.get('x-user-role');
   const userId = req.headers.get('x-user-id');
 

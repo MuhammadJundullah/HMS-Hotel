@@ -50,13 +50,14 @@ export async function POST(req: NextRequest) {
 
     const dataToCreate = {
       roomNumber,
-      status: 'TERSEDIA', // Use enum value
+      status: 'TERSEDIA',
     };
     console.log('Data for room creation:', dataToCreate);
 
     console.log('Creating new room in database...');
     const newRoom = await prisma.room.create({
-      data: dataToCreate,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: dataToCreate as any,
     });
     console.log('Room created successfully:', newRoom);
 

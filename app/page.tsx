@@ -3,13 +3,8 @@
 import { useEffect, useState } from 'react';
 import RoomCard from './components/RoomCard';
 import AddRoomForm from './components/AddRoomForm';
-
-interface Room {
-  id: number;
-  roomNumber: string;
-  status: string;
-  cleanliness: string;
-}
+import { Room } from '@/types/room';
+import { UserRole } from '@/types/user'
 
 export default function DashboardPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -77,7 +72,7 @@ export default function DashboardPage() {
               <RoomCard
                 key={room.id}
                 room={room}
-                userRole={userRole}
+                userRole={userRole as UserRole}
                 onDelete={handleDeleteRoom}
                 onUpdate={fetchRooms}
               />
