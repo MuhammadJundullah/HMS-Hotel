@@ -67,7 +67,7 @@ export default function LogsPage() {
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="overflow-hidden bg-white shadow sm:rounded-lg">
-            <div className="p-6 overflow-x-auto">
+            <div className="p-6 overflow-x-auto md:overflow-x-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -121,7 +121,7 @@ export default function LogsPage() {
                       <tr key={log.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            {log.room.roomNumber}
+                            {log.room ? log.room.roomNumber : 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -131,7 +131,7 @@ export default function LogsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            {log.user.email}
+                            {log.user ? log.user.email : 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

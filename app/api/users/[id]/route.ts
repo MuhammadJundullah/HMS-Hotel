@@ -120,18 +120,6 @@ export async function DELETE(req: any, context: { params: Promise<{ id: string }
       where: { id: parseInt(id, 10) },
     });
 
-    try {
-      await prisma.log.create({
-        data: {
-          activity: `Menghapus pengguna: ${userToDelete.email} (ID: ${userToDelete.id})`,
-          userId: parseInt(adminId, 10),
-        },
-      });
-    } catch (logError) {
-      console.error('Error creating log entry for user deletion:', logError);
-      // Do not rethrow, as user deletion was successful.
-    }
-
     return NextResponse.json({ message: 'Pengguna berhasil dihapus' });
   } catch (error) {
     console.error(`Error deleting user ${id}:`, error);

@@ -79,7 +79,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
             id="status"
             value={room.status}
             onChange={(e) => handleUpdateStatus(e.target.value as Room['status'])}
-            className="w-full p-1 sm:p-2 text-black rounded-md text-xs sm:text-sm"
+            className="w-full p-1 sm:p-2 text-black rounded-md text-xs sm:text-sm hover:cursor-pointer"
           >
             <option value="TERSEDIA">Tersedia</option>
             <option value="DIPESAN">Dipesan</option>
@@ -90,7 +90,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
       {userRole === 'ADMIN' && (
         <button
           onClick={handleDelete}
-          className="w-full px-2 py-1 mt-2 text-xs sm:text-sm font-medium text-white bg-red-800 border border-transparent rounded-md shadow-sm sm:px-4 sm:py-2 hover:bg-red-600 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          className="w-full px-2 py-1 mt-2 text-xs sm:text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm sm:px-4 sm:py-2 hover:bg-red-800 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
         >
           Hapus Kamar
         </button>
