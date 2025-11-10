@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const rooms = await prisma.room.findMany({
       orderBy: {
-        roomNumber: 'asc',
+        roomNumber: 'desc',
       },
     });
     return NextResponse.json(rooms);

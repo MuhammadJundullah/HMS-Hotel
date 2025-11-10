@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aplikasi Next Buatan",
+  title: "HMS Hotel",
   description: "Dibuat oleh create next app",
 };
 

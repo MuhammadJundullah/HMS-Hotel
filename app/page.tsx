@@ -9,27 +9,34 @@ import { UserRole } from '@/types/user'
 export default function DashboardPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [userRole, setUserRole] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchRooms = async () => {
-    const res = await fetch('/api/rooms');
-    if (res.ok) {
-      const data = await res.json();
-      console.log('Data kamar berhasil diambil:', data);
-      setRooms(data);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const roomsRes = await fetch('/api/rooms');
+      if (roomsRes.ok) {
+        const roomsData = await roomsRes.json();
+        const sortedData = roomsData.sort((a: Room, b: Room) => {
+          const numA = parseInt(a.roomNumber.replace(/[^0-9]/g, ''), 10);
+          const numB = parseInt(b.roomNumber.replace(/[^0-9]/g, ''), 10);
+          return numA - numB;
+        });
+        setRooms(sortedData);
+      }
+
+      const userRes = await fetch('/api/auth/user');
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        setUserRole(userData.role);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const res = await fetch('/api/auth/user');
-      if (res.ok) {
-        const data = await res.json();
-        setUserRole(data.role);
-      }
-    };
-
-    fetchRooms();
-    fetchUser();
+    fetchData();
   }, []);
 
   const handleAddRoom = async (roomNumber: string) => {
@@ -42,7 +49,7 @@ export default function DashboardPage() {
     });
 
     if (res.ok) {
-      fetchRooms();
+      fetchData();
     } else if (res.status === 409) {
       const errorData = await res.json();
       alert(errorData.message);
@@ -58,7 +65,7 @@ export default function DashboardPage() {
     });
 
     if (res.ok) {
-      fetchRooms();
+      fetchData();
     }
   };
 
@@ -67,17 +74,23 @@ export default function DashboardPage() {
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 px-2">
           {userRole === 'ADMIN' && <AddRoomForm onAddRoom={handleAddRoom} />}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {rooms.map((room) => (
-              <RoomCard
-                key={room.id}
-                room={room}
-                userRole={userRole as UserRole}
-                onDelete={handleDeleteRoom}
-                onUpdate={fetchRooms}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <p className="text-lg text-gray-500">Loading rooms...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {rooms.map((room) => (
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  userRole={userRole as UserRole}
+                  onDelete={handleDeleteRoom}
+                  onUpdate={fetchData}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

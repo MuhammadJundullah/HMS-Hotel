@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Log {
@@ -17,6 +17,7 @@ interface Log {
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const formatTimeAgo = (dateString: string) => {
@@ -24,31 +25,27 @@ export default function LogsPage() {
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    let interval = seconds / 31536000;
-    if (interval > 1) {
-      return Math.floor(interval) + " tahun lalu";
+    const intervals = {
+      tahun: 31536000,
+      bulan: 2592000,
+      hari: 86400,
+      jam: 3600,
+      menit: 60,
+      detik: 1,
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = seconds / secondsInUnit;
+      if (interval > 1) {
+        return `${Math.floor(interval)} ${unit} lalu`;
+      }
     }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " bulan lalu";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " hari lalu";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " jam lalu";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " menit lalu";
-    }
-    return Math.floor(seconds) + " detik lalu";
+    return 'baru saja';
   };
 
-  useEffect(() => {
-    const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
+    setIsLoading(true);
+    try {
       const res = await fetch('/api/logs');
       if (res.ok) {
         const data = await res.json();
@@ -56,10 +53,14 @@ export default function LogsPage() {
       } else if (res.status === 403) {
         router.push('/');
       }
-    };
-
-    fetchLogs();
+    } finally {
+      setIsLoading(false);
+    }
   }, [router]);
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -103,35 +104,49 @@ export default function LogsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {logs.map((log) => (
-                    <tr key={log.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {log.room.roomNumber}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {log.activity}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {log.user.email}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {new Date(log.createdAt).toLocaleString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {formatTimeAgo(log.createdAt)}
-                        </div>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                        Loading logs...
                       </td>
                     </tr>
-                  ))}
+                  ) : logs.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                        No logs found.
+                      </td>
+                    </tr>
+                  ) : (
+                    logs.map((log) => (
+                      <tr key={log.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {log.room.roomNumber}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {log.activity}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {log.user.email}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {new Date(log.createdAt).toLocaleString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {formatTimeAgo(log.createdAt)}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
