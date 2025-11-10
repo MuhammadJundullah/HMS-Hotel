@@ -56,20 +56,11 @@ export async function POST(req: NextRequest) {
 
     console.log('Creating new room in database...');
     const newRoom = await prisma.room.create({
+      
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: dataToCreate as any,
     });
     console.log('Room created successfully:', newRoom);
-
-    console.log(`Logging activity: "Kamar ${roomNumber} dibuat" for userId: ${userId}, roomId: ${newRoom.id}`);
-    await prisma.log.create({
-      data: {
-        activity: `Kamar ${roomNumber} dibuat`,
-        userId: parseInt(userId, 10),
-        roomId: newRoom.id,
-      },
-    });
-    console.log('Activity logged.');
 
     return NextResponse.json(newRoom, { status: 201 });
   } catch (error) {

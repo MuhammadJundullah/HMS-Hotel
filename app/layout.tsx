@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "HMS Hotel",
-  description: "Dibuat oleh create next app",
+  description: "Housekeeping Management Sistem",
 };
 
 export default function RootLayout({
