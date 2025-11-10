@@ -15,15 +15,21 @@ export default function UserManagementPage() {
   const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [showEditUserForm, setShowEditUserForm] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [isTableLoading, setIsTableLoading] = useState(false); 
   const router = useRouter();
 
   const fetchUsers = useCallback(async () => {
-    const res = await fetch('/api/users');
-    if (res.ok) {
-      const data = await res.json();
-      setUsers(data);
-    } else if (res.status === 403) {
-      router.push('/');
+    setIsTableLoading(true);
+    try {
+      const res = await fetch('/api/users');
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data);
+      } else if (res.status === 403) {
+        router.push('/');
+      }
+    } finally {
+      setIsTableLoading(false);
     }
   }, [router]);
 
@@ -161,35 +167,43 @@ export default function UserManagementPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.role}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => {
-                          setEditingUser(user);
-                          setShowEditUserForm(true);
-                        }}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
-                      >
-                        Edit
-                      </button>
-                      {user.role !== 'ADMIN' && ( 
-                        <button
-                          onClick={() => handleDeleteUser(user.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Hapus
-                        </button>
-                      )}
+                {isTableLoading ? (
+                  <tr>
+                    <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
+                      Loading pengguna...
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  users.map((user) => (
+                    <tr key={user.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{user.email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{user.role}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            setEditingUser(user);
+                            setShowEditUserForm(true);
+                          }}
+                          className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        >
+                          Edit
+                        </button>
+                        {user.role !== 'ADMIN' && ( 
+                          <button
+                            onClick={() => handleDeleteUser(user.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Hapus
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

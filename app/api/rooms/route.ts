@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { roomNumber } = await req.json();
-    console.log(`Received roomNumber: ${roomNumber}`);
+    const { roomNumber, category, type, floor } = await req.json();
+    console.log(`Received roomNumber: ${roomNumber}, category: ${category}, type: ${type}, floor: ${floor}`);
 
     // Check if room already exists
     const existingRoom = await prisma.room.findUnique({
@@ -50,17 +50,29 @@ export async function POST(req: NextRequest) {
 
     const dataToCreate = {
       roomNumber,
-      status: 'TERSEDIA',
+      category,
+      type,
+      floor,
     };
     console.log('Data for room creation:', dataToCreate);
 
     console.log('Creating new room in database...');
     const newRoom = await prisma.room.create({
-      
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: dataToCreate as any,
+      data: dataToCreate,
     });
     console.log('Room created successfully:', newRoom);
+
+    // Log the room creation activity
+    if (userId) {
+      await prisma.log.create({
+        data: {
+          activity: `Kamar ${newRoom.roomNumber} ditambahkan`,
+          userId: parseInt(userId, 10),
+          roomId: newRoom.id,
+        },
+      });
+      console.log('Room creation activity logged.');
+    }
 
     return NextResponse.json(newRoom, { status: 201 });
   } catch (error) {

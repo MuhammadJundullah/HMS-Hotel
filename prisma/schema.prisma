@@ -11,18 +11,29 @@ datasource db {
 }
 
 model Room {
-  id          Int      @id @default(autoincrement())
-  roomNumber  String   @unique
-  status      RoomStatus
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          Int          @id @default(autoincrement())
+  roomNumber  String       @unique
+  category    RoomCategory
+  type        RoomType
+  floor       Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   logs        Log[]
 }
 
-enum RoomStatus {
-  TERSEDIA
+enum RoomCategory {
+  KOSONG
+  TERISI
   DIBERSIHKAN
-  DIPESAN
+  PERBAIKAN
+}
+
+enum RoomType {
+  FAMILY
+  EXECUTIVE
+  DELUXE
+  SUPERIOR
+  STANDARD
 }
 
 model User {

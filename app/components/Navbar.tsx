@@ -35,13 +35,18 @@ export default function Navbar() {
     }
   };
 
+  const handleNavigationClick = (path: string) => {
+    setIsMenuOpen(false); 
+    router.push(path);
+  };
+
   return (
     <header className="bg-white shadow">
       <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Image src={favicon} alt="Favicon" width={32} height={32} className="mr-2" />
-            <h1 className="hidden text-3xl font-bold leading-tight text-gray-900 sm:block">
+            <h1 className="sm:text-3xl text-lg font-bold leading-tight text-gray-900 sm:block">
               Housekeeping Management Sistem
             </h1>
           </div>
@@ -72,8 +77,11 @@ export default function Navbar() {
                 )}
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                  </svg>
                   Keluar
                 </button>
               </div>
@@ -106,19 +114,19 @@ export default function Navbar() {
             {userRole === 'ADMIN' && (
               <>
                 <button
-                  onClick={() => router.push('/')}
+                  onClick={() => handleNavigationClick('/')}
                   className="block w-full px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   List Kamar
                 </button>
                 <button
-                  onClick={() => router.push('/logs')}
+                  onClick={() => handleNavigationClick('/logs')}
                   className="block w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Log Aktivitas
                 </button>
                 <button
-                  onClick={() => router.push('/admin/users')}
+                  onClick={() => handleNavigationClick('/admin/users')}
                   className="block w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Manajemen Pengguna
@@ -127,8 +135,11 @@ export default function Navbar() {
             )}
             <button
               onClick={handleLogout}
-              className="block w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              className="block w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
               Keluar
             </button>
           </div>

@@ -8,9 +8,9 @@ export async function PATCH(req: any, context: { params: Promise<{ id: string }>
   const { id } = await context.params;
   const userId = req.headers.get('x-user-id');
   const userRole = req.headers.get('x-user-role');
-  const { status } = await req.json(); 
+  const { roomNumber, category, type, floor } = await req.json(); 
 
-  console.log(`PATCH /api/rooms/${id} called with userId: ${userId}, userRole: ${userRole}, status: ${status}`);
+  console.log(`PATCH /api/rooms/${id} called with userId: ${userId}, userRole: ${userRole}, roomNumber: ${roomNumber}, category: ${category}, type: ${type}, floor: ${floor}`);
 
   if (!userId || (userRole !== 'ADMIN' && userRole !== 'ROOM_PREPARER')) {
     console.error(`Forbidden access attempt: userId: ${userId}, userRole: ${userRole}`);
@@ -18,10 +18,19 @@ export async function PATCH(req: any, context: { params: Promise<{ id: string }>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataToUpdate: { status?: any } = {};
+  const dataToUpdate: { roomNumber?: string, category?: any, type?: any, floor?: number } = {};
 
-  if (status) {
-    dataToUpdate.status = status;
+  if (roomNumber) {
+    dataToUpdate.roomNumber = roomNumber;
+  }
+  if (category) {
+    dataToUpdate.category = category;
+  }
+  if (type) {
+    dataToUpdate.type = type;
+  }
+  if (floor) {
+    dataToUpdate.floor = floor;
   }
   console.log(`Data to update for room ${id}:`, dataToUpdate);
 
@@ -45,9 +54,17 @@ export async function PATCH(req: any, context: { params: Promise<{ id: string }>
     console.log(`Room ${id} updated successfully:`, updatedRoom);
 
     let activity = '';
-    // Removed cleanliness change log
-    if (status && status !== room.status) {
-      activity = `Status berubah dari ${room.status} menjadi ${status}`;
+    if (roomNumber && roomNumber !== room.roomNumber) {
+      activity += `Nomor kamar berubah dari ${room.roomNumber} menjadi ${roomNumber}. `;
+    }
+    if (category && category !== room.category) {
+      activity += `Status berubah dari ${room.category} menjadi ${category}. `;
+    }
+    if (type && type !== room.type) {
+      activity += `Tipe berubah dari ${room.type} menjadi ${type}. `;
+    }
+    if (floor && floor !== room.floor) {
+      activity += `Lantai berubah dari ${room.floor} menjadi ${floor}. `;
     }
 
     if (activity) {

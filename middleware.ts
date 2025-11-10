@@ -5,11 +5,21 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
   const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key');
 
+  const isLoginPage = req.nextUrl.pathname === '/login';
+  const isApiLogin = req.nextUrl.pathname === '/api/auth/login';
+
   if (!token) {
-    if (req.nextUrl.pathname.startsWith('/api')) {
-      return NextResponse.json({ message: 'Authentication required' }, { status: 401 });
+    // If no token and not on login page or api login, redirect to login
+    if (!isLoginPage && !isApiLogin && !req.nextUrl.pathname.startsWith('/api')) {
+      return NextResponse.redirect(new URL('/login', req.url));
     }
-    return NextResponse.redirect(new URL('/login', req.url));
+    // Allow access to login page or api login if no token
+    return NextResponse.next();
+  }
+
+  // If token exists and trying to access login page, redirect to home
+  if (isLoginPage) {
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   try {
@@ -26,13 +36,14 @@ export async function middleware(req: NextRequest) {
 
     return response;
   } catch (error) {
-    if (req.nextUrl.pathname.startsWith('/api')) {
-      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
-    }
-    return NextResponse.redirect(new URL('/login', req.url));
+    console.error('JWT verification failed:', error);
+    // If token is invalid, clear cookie and redirect to login
+    const response = NextResponse.redirect(new URL('/login', req.url));
+    response.cookies.delete('token');
+    return response;
   }
 }
 
 export const config = {
-  matcher: ['/', '/api/rooms/:path*', '/api/auth/user', '/logs', '/api/logs', '/admin/users', '/api/users/:path*'],
+  matcher: ['/', '/api/rooms/:path*', '/api/auth/user', '/logs', '/api/logs', '/admin/users', '/api/users/:path*', '/login'],
 };
