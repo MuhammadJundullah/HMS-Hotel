@@ -45,7 +45,7 @@ export default function Navbar() {
       <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Image src={favicon} alt="Favicon" width={32} height={32} className="mr-2" />
+            <Image src={favicon} alt="Favicon" height={52} className="mr-2" />
             <h1 className="sm:text-3xl text-lg font-bold leading-tight text-gray-900 sm:block">
               Housekeeping Management Sistem
             </h1>
@@ -59,7 +59,7 @@ export default function Navbar() {
                       onClick={() => router.push('/')}
                       className="px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
-                      List Kamar
+                      Daftar Kamar
                     </button>
                     <button
                       onClick={() => router.push('/logs')}

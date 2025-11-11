@@ -59,7 +59,7 @@ export default function DashboardPage() {
     }
   }, [allRooms, selectedFloor]); 
 
-  const handleAddRoom = async (roomNumber: string, category: RoomCategory, type: RoomType, floor: number) => {
+  const handleAddRoom = async (roomNumber: string, category: RoomCategory, type: RoomType, floor: number): Promise<void> => {
     const res = await fetch('/api/rooms', {
       method: 'POST',
       headers: {
@@ -79,9 +79,11 @@ export default function DashboardPage() {
     } else if (res.status === 409) {
       const errorData = await res.json();
       alert(errorData.message);
+      throw new Error(errorData.message);
     } else {
       const errorData = await res.json();
       alert(errorData.message || 'Gagal menambahkan kamar');
+      throw new Error(errorData.message || 'Gagal menambahkan kamar');
     }
   };
 
@@ -91,41 +93,17 @@ export default function DashboardPage() {
     ));
   };
 
-  const handleDeleteRoom = async (id: number) => {
-    console.log(`Attempting to delete room with ID: ${id}`);
-    const res = await fetch(`/api/rooms/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (res.ok) {
-      console.log(`Room with ID: ${id} deleted successfully from API. Updating local state.`);
-      setAllRooms(prevRooms => {
-        const newRooms = prevRooms.filter(room => room.id !== id);
-        console.log('New allRooms state after deletion:', newRooms);
-        return newRooms;
-      });
-    } else {
-      const errorData = await res.json();
-      console.error(`Error deleting room with ID: ${id}:`, errorData);
-      alert(errorData.message || 'Gagal menghapus kamar');
-    }
+  const handleDeleteRoom = (id: number) => {
+    setAllRooms(prevRooms => prevRooms.filter(room => room.id !== id));
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 px-2">
-          <h1 className="mb-6 text-3xl font-bold text-gray-900 bg">List Kamar</h1>
+          <h1 className="mb-6 text-3xl font-bold text-gray-900 bg">Daftar Kamar</h1>
           <div className="flex justify-between items-center mb-4">
-            {userRole === 'ADMIN' && (
-              <button
-                onClick={() => setIsAddRoomModalOpen(true)}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Tambah Kamar Baru
-              </button>
-            )}
-            <select
+              <select
               value={selectedFloor}
               onChange={(e) => setSelectedFloor(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
@@ -135,6 +113,14 @@ export default function DashboardPage() {
                 <option key={floor} value={floor}>Lantai {floor}</option>
               ))}
             </select>
+            {userRole === 'ADMIN' && (
+              <button
+                onClick={() => setIsAddRoomModalOpen(true)}
+                className="px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"
+              >
+                Tambah Kamar
+              </button>
+            )}
           </div>
 
           <Modal

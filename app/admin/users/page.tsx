@@ -119,9 +119,9 @@ export default function UserManagementPage() {
 
           <button
             onClick={() => setShowAddUserForm(true)}
-            className="px-4 py-2 mb-4 text-white bg-gray-600 rounded-md hover:bg-gray-700"
+            className="px-4 py-2 mb-4 text-white bg-gray-800 rounded-md hover:bg-gray-900 hover:cursor-pointer"
           >
-            Tambah ROOM_PREPARER Baru
+            Tambah Akun Room Preparer
           </button>
 
           {showAddUserForm && (
@@ -170,7 +170,7 @@ export default function UserManagementPage() {
                 {isTableLoading ? (
                   <tr>
                     <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
-                      Loading pengguna...
+                      Loading...
                     </td>
                   </tr>
                 ) : (

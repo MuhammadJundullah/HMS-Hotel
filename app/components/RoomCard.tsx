@@ -20,20 +20,21 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
   const [editedCategory, setEditedCategory] = useState<RoomCategory>(room.category);
   const [editedType, setEditedType] = useState<RoomType>(room.type);
   const [editedFloor, setEditedFloor] = useState(room.floor);
-  const [isUpdatingCategory, setIsUpdatingCategory] = useState(false); // New state for category loading
+  const [isUpdatingCategory, setIsUpdatingCategory] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const getCategoryColor = (category: RoomCategory): string => {
     switch (category) {
       case 'KOSONG': 
-        return 'bg-green-300';
+        return 'bg-green-200';
       case 'TERISI': 
-        return 'bg-red-300';
+        return 'bg-red-200';
       case 'DIBERSIHKAN': 
-        return 'bg-blue-300';
+        return 'bg-blue-200';
       case 'PERBAIKAN':
-        return 'bg-yellow-300';
+        return 'bg-yellow-200';
       default:
-        return 'bg-gray-300'; 
+        return 'bg-gray-200'; 
     }
   };
 
@@ -68,7 +69,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
     const confirmation = window.confirm(`Apakah Anda yakin ingin mengubah kategori kamar ${room.roomNumber} menjadi ${newCategory}?`);
     if (!confirmation) return;
 
-    setIsUpdatingCategory(true); // Set loading to true
+    setIsUpdatingCategory(true);
     try {
       const res = await fetch(`/api/rooms/${room.id}`, {
         method: 'PATCH', 
@@ -82,7 +83,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
       console.error('Error updating room category:', error);
       alert('Gagal memperbarui kategori kamar.');
     } finally {
-      setIsUpdatingCategory(false); // Set loading to false
+      setIsUpdatingCategory(false);
     }
   };
 
@@ -90,13 +91,18 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
     const confirmation = window.confirm(`Apakah Anda yakin ingin menghapus kamar ${room.roomNumber}? Tindakan ini tidak dapat dibatalkan.`);
     if (!confirmation) return;
 
+    setIsDeleting(true);
     try {
       const res = await fetch(`/api/rooms/${room.id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Gagal menghapus kamar.');
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Gagal menghapus kamar.');
+      }
       onDelete(room.id); 
     } catch (error) {
       console.error('Error deleting room:', error);
-      alert('Gagal menghapus kamar.');
+      alert((error as Error).message);
+      setIsDeleting(false);
     }
   };
 
@@ -114,8 +120,8 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
           <h2 className="text-lg sm:text-xl font-bold mb-2 sm:mb-0">{room.roomNumber}</h2>
         )}
         {userRole === 'ADMIN' && (
-          <button onClick={() => setIsEditing(!isEditing)} className="sm:block hidden text-blue-600 text-sm px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-100 transition-colors">
-            {isEditing ? 'Batal' : 'Edit'}
+          <button onClick={() => setIsEditing(!isEditing)} className="sm:block hidden text-blue-600 text-sm px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-100 transition-colors hover:cursor-pointer">
+            {isEditing ? 'Batal' : 'Edit Kamar'}
           </button>
         )}
       </div>
@@ -123,7 +129,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
             <div>
-              <label htmlFor="editCategory" className="block mb-1 text-xs font-medium text-black">
+              <label htmlFor="editCategory" className="block mb-1 text-xs  font-bold text-black">
                 Status
               </label>
               <select
@@ -139,7 +145,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
               </select>
             </div>
             <div>
-              <label htmlFor="editType" className="block mb-1 text-xs font-medium text-black">
+              <label htmlFor="editType" className="block mb-1 text-xs font-bold text-black">
                 Tipe
               </label>
               <select
@@ -148,15 +154,15 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
                 onChange={(e) => setEditedType(e.target.value as RoomType)}
                 className="w-full p-1 text-black rounded-md text-xs"
               >
-                <option value="FAMILY">Kamar Family Room</option>
-                <option value="EXECUTIVE">Kamar Exekutif</option>
-                <option value="DELUXE">Kamar Deluxe</option>
-                <option value="SUPERIOR">Kamar Superior</option>
-                <option value="STANDARD">Kamar Standart</option>
+                <option value="FAMILY">Family Room</option>
+                <option value="EXECUTIVE">Executive Room</option>
+                <option value="DELUXE">Deluxe Room</option>
+                <option value="SUPERIOR">Superior Room</option>
+                <option value="STANDARD">Standard Room</option>
               </select>
             </div>
             <div>
-              <label htmlFor="editFloor" className="block mb-1 text-xs font-medium text-black">
+              <label htmlFor="editFloor" className="block mb-1 text-xs font-bold text-black">
                 Lantai
               </label>
               <input
@@ -170,7 +176,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
           </div>
           <button
             onClick={handleUpdateRoomDetails}
-            className="w-full px-3 py-2 mt-4 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            className="w-full px-3 py-2 mt-4 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"
           >
             Simpan
           </button>
@@ -191,7 +197,7 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
                   id="category"
                   value={room.category}
                   onChange={handleCategoryChange} 
-                  disabled={isUpdatingCategory} // Disable while loading
+                  disabled={isUpdatingCategory} 
                   className={`w-full p-1 text-black rounded-md text-xs hover:cursor-pointer ${isUpdatingCategory ? 'opacity-50' : ''}`}
                 >
                   <option value="KOSONG">Kamar Kosong</option>
@@ -210,16 +216,17 @@ export default function RoomCard({ room, userRole, onDelete, onUpdate }: RoomCar
         </div>
       )}
          {userRole === 'ADMIN' && (
-          <button onClick={() => setIsEditing(!isEditing)} className="sm:hidden block w-full px-3 py-2 mt-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            {isEditing ? 'Batal' : 'Edit'}
+          <button onClick={() => setIsEditing(!isEditing)} className="sm:hidden block w-full px-3 py-2 mt-3 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            {isEditing ? 'Batal' : 'Edit Kamar'}
           </button>
         )}
       {userRole === 'ADMIN' && (
         <button
           onClick={handleDelete}
-          className="w-full px-3 py-2 mt-3 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          disabled={isDeleting}
+          className="w-full px-3 py-2 mt-3 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
         >
-          Hapus Kamar
+          {isDeleting ? 'Menghapus...' : 'Hapus Kamar'}
         </button>
       )}
     </div>
