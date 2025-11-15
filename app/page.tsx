@@ -102,11 +102,12 @@ export default function DashboardPage() {
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 px-2">
           <h1 className="mb-6 text-3xl font-bold text-gray-900 bg">Daftar Kamar</h1>
+          <hr className="text-gray-200 py-2"></hr>
           <div className="flex justify-between items-center mb-4">
               <select
               value={selectedFloor}
               onChange={(e) => setSelectedFloor(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900 hover:cursor-pointer"
             >
               <option value="">Semua Lantai</option>
               {availableFloors.map(floor => (
@@ -136,7 +137,7 @@ export default function DashboardPage() {
               <p className="text-lg text-gray-500">Loading rooms...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {rooms.map((room) => (
                 <RoomCard
                   key={room.id}

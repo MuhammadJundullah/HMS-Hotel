@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     .setSubject(user.id.toString())
     .sign(secret);
 
-  const response = NextResponse.json({ message: 'Login successful' });
+  const response = NextResponse.json({ message: 'Login successful', token });
   response.cookies.set('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

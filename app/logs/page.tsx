@@ -19,7 +19,7 @@ export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // You can make this configurable
+  const [itemsPerPage] = useState(10);
   const [totalLogs, setTotalLogs] = useState(0);
   const router = useRouter();
 
@@ -79,6 +79,7 @@ export default function LogsPage() {
       <main>
         <div className="px-2 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <h1 className="mb-6 text-3xl font-bold text-gray-900">Log Aktivitas</h1>
+          <hr className="text-gray-200 py-2"></hr>
           <div className="overflow-hidden bg-white shadow sm:rounded-lg">
             <div className="p-6 overflow-x-auto md:overflow-x-hidden">
               <table className="min-w-full divide-y divide-gray-200">
